@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sokonis Alexa grocery example
+Parameters:
+  AlexaSkillId:
+    Type: String
+  BedrockModelId:
+    Type: String
+    Default: ''
+  DemoMode:
+    Type: String
+    Default: 'true'
+    AllowedValues: ['true','false']
+Resources:
+  SokonisAlexaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs22.x
+      Handler: src/alexa.handler
+      CodeUri: .
+      Timeout: 20
+      MemorySize: 256
+      Environment:
+        Variables:
+          ALEXA_SKILL_ID: !Ref AlexaSkillId
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          DEMO_MODE: !Ref DemoMode
+      Events:
+        AlexaSkill:
+          Type: AlexaSkill
+          Properties:
+            SkillId: !Ref AlexaSkillId
+Outputs:
+  LambdaArn:
+    Value: !GetAtt SokonisAlexaFunction.Arn
