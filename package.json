@@ -1,0 +1,18 @@
+{
+  "name": "sokonis-alexa-aws-open-source",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/service.mjs && node --check src/lambda.mjs && node --check src/alexa.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.800.0",
+    "firebase-admin": "^13.0.0",
+    "ask-sdk-core": "^2.14.0"
+  }
+}
