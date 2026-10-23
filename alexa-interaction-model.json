@@ -1,0 +1,53 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "sokonis groceries",
+      "intents": [
+        {
+          "name": "FindProductIntent",
+          "slots": [
+            {
+              "name": "product",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "find {product}",
+            "search for {product}",
+            "do you have {product}"
+          ]
+        },
+        {
+          "name": "MealSuggestionIntent",
+          "slots": [
+            {
+              "name": "ingredients",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "suggest a meal with {ingredients}",
+            "what can I cook with {ingredients}"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        }
+      ],
+      "types": []
+    }
+  }
+}
