@@ -1,0 +1,12 @@
+import Alexa from 'ask-sdk-core';
+import {makeGroceryService,makeMemoryStore} from './service.mjs';
+import {makeFirebaseStore} from './firebase.mjs';
+import {makeBedrockAI} from './bedrock.mjs';
+let service;
+const s=()=>service??=makeGroceryService(process.env.DEMO_MODE==='true'?makeMemoryStore([{name:'Rice',price:200},{name:'Tomatoes',price:80}]):makeFirebaseStore(),process.env.BEDROCK_MODEL_ID?makeBedrockAI():null);
+const launch={canHandle:i=>Alexa.getRequestType(i.requestEnvelope)==='LaunchRequest',handle:i=>i.responseBuilder.speak('Welcome to Sokonis. Ask me to find groceries or suggest a meal.').reprompt('What would you like?').getResponse()};
+const product={canHandle:i=>Alexa.getRequestType(i.requestEnvelope)==='IntentRequest'&&Alexa.getIntentName(i.requestEnvelope)==='FindProductIntent',async handle(i){const term=i.requestEnvelope.request.intent.slots?.product?.value||'';const results=await s().findProducts(term);return i.responseBuilder.speak(results.length?'I found '+results.map(x=>x.name).join(', '):'I could not find that product').getResponse();}};
+const meal={canHandle:i=>Alexa.getRequestType(i.requestEnvelope)==='IntentRequest'&&Alexa.getIntentName(i.requestEnvelope)==='MealSuggestionIntent',async handle(i){const x=i.requestEnvelope.request.intent.slots?.ingredients?.value||'';return i.responseBuilder.speak(await s().suggestMeal(x)).getResponse();}};
+const fallback={canHandle:()=>true,handle:i=>i.responseBuilder.speak('Ask me to find a product or suggest a meal.').getResponse()};
+const error={canHandle:()=>true,handle(i,e){console.error(e.message);return i.responseBuilder.speak('Something went wrong. Please try again.').getResponse();}};
+export const handler=Alexa.SkillBuilders.custom().addRequestHandlers(launch,product,meal,fallback).addErrorHandlers(error).withSkillId(process.env.ALEXA_SKILL_ID).lambda();
